@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_marginStart="30dp"
+    android:layout_marginBottom="20dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="900px"
+    android:layout_height="260px"
+    app:cardCornerRadius="5dp"
+    android:id="@+id/recyclerlinear"
+    android:background="@drawable/todo_incompleted">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="공부하기"
+            android:textSize="40sp"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="10dp"
+            android:gravity="right">
+            <ImageView
+                android:id="@+id/date"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/day"/>
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="집" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

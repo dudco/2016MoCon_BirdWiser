@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_wifi"
+            android:title="와이파이 관리"
+            android:icon="@drawable/wifi"/>
+        <item
+            android:id="@+id/nav_floating"
+            android:title="플로팅 관리"
+            android:icon="@drawable/settings"/>
+        <item
+            android:id="@+id/nav_devInfo"
+            android:title="개발자 정보"
+            android:icon="@drawable/developerinpo"/>
+    </group>
+</menu>

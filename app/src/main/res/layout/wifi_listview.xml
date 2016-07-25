@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:background="@drawable/shape_text"
+    android:gravity="center_vertical"
+    android:weightSum="6">
+    <TextView
+        android:id="@+id/ssid"
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:layout_weight="3"
+        android:layout_marginStart="30dp"
+        android:text="Sunrins"
+        android:gravity="left"/>
+    <TextView
+        android:id="@+id/location_wifi"
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:layout_weight="2"
+        android:gravity="right"
+        android:layout_marginEnd="10dp"
+        android:text="학교"/>
+    <ImageView
+        android:id="@+id/delete_wifi"
+        android:layout_weight="1"
+        android:layout_width="1dp"
+        android:layout_height="35dp"
+        android:src="@drawable/delete_addpage"/>
+</LinearLayout>
