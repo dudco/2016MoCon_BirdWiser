@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.example.youngchae.birdwizer.WIFI.WifiControl;
+
 import java.util.ArrayList;
 
 /**

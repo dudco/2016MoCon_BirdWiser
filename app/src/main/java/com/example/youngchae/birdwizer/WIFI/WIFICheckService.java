@@ -1,4 +1,4 @@
-package com.example.youngchae.birdwizer;
+package com.example.youngchae.birdwizer.WIFI;
 
 import android.app.Service;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.example.youngchae.birdwizer.Floating.MyService;
 
 public class WIFICheckService extends Service {
     WifiReceiver mWifiMonitor;

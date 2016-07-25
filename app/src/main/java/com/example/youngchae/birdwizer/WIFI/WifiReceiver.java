@@ -1,4 +1,4 @@
-package com.example.youngchae.birdwizer;
+package com.example.youngchae.birdwizer.WIFI;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

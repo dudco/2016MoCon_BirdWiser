@@ -1,4 +1,4 @@
-package com.example.youngchae.birdwizer;
+package com.example.youngchae.birdwizer.Floating;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
@@ -24,6 +24,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.youngchae.birdwizer.R;
 
 public class MyService extends Service {
     private float initialTouchX;

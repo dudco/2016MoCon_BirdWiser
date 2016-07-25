@@ -1,4 +1,4 @@
-package com.example.youngchae.birdwizer;
+package com.example.youngchae.birdwizer.Floating;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -15,6 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
+
+import com.example.youngchae.birdwizer.R;
+import com.example.youngchae.birdwizer.Utils;
 
 /**
  * Created by youngchae on 2016-07-15.
@@ -101,7 +104,7 @@ public class FloatingControl extends AppCompatActivity {
     public boolean isServiceRunningCheck() {
         ActivityManager manager = (ActivityManager) this.getSystemService(Activity.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("com.example.youngchae.birdwizer.MyService".equals(service.service.getClassName())) {
+            if ("com.example.youngchae.birdwizer.Floating.MyService".equals(service.service.getClassName())) {
                 return true;
             }
         }

@@ -3,6 +3,7 @@ package com.example.youngchae.birdwizer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -16,10 +17,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.youngchae.birdwizer.Floating.FloatingControl;
+import com.example.youngchae.birdwizer.Tutorial.TutorialActivity;
+import com.example.youngchae.birdwizer.WIFI.WIFICheckService;
+import com.example.youngchae.birdwizer.WIFI.WifiControl;
+import com.example.youngchae.birdwizer.WIFI.WifiReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     WifiReceiver mWifiMonitor;
     SharedPreferences todoList;
     SharedPreferences.Editor todoListEditor;
+    int asdf = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +60,13 @@ public class MainActivity extends AppCompatActivity {
             firstEdit.putBoolean("first", false);
             firstEdit.apply();
         }
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         todoList = getSharedPreferences("todoList",MODE_PRIVATE);
         todoListEditor = todoList.edit();
+        asdf = todoList.getInt("size",0);
+        Log.e("size",asdf+"");
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,27 +117,31 @@ public class MainActivity extends AppCompatActivity {
         textView.setTypeface(tf);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
-//        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//            @Override
-//            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-//                int totalWidth = parent.getWidth();
-//                int maxCardWidth = view.getWidth();
-//                int sidePadding = (totalWidth - maxCardWidth) / 2;
-//                sidePadding = Math.max(0, sidePadding);
-//                outRect.set(sidePadding, 0, sidePadding,16);
-//            }
-//        });
+        DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+        final int twidth = dm.widthPixels;
+        final int cardWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 350.0f, getApplicationContext().getResources().getDisplayMetrics());
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int totalWidth = twidth;
+                int maxCardWidth = cardWidth;
+                int sidePadding = (totalWidth - maxCardWidth) / 2;
+                sidePadding = Math.max(0, sidePadding);
+                outRect.set(sidePadding, 0, sidePadding,16);
+            }
+        });
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        for(int i = 1; i<=todoList.getInt("size", 0); i++){
-            if(todoList.getString("todoList_title_"+i," ") != " " && todoList.getString("todoList_desc_"+i," ") != " " && todoList.getString("todoList_location_"+i," ") != " "){
+        for(int i = 1; i <= todoList.getInt("size", 0); i++){
+            if(!todoList.getString("todoList_title_"+i," ") .equals(" ") && !todoList.getString("todoList_desc_"+i," ").equals(" ") && !todoList.getString("todoList_location_"+i," ").equals(" ")){
                 items.add(new MainRecyclerItem(
                         todoList.getInt("todoList_date_"+i, 0),
                         todoList.getString("todoList_title_"+i, " "),
                         todoList.getString("todoList_location_"+i, " ")
                 ));
+                Log.e("size",todoList.getInt("size", 0)+"");
             }
         }
 
@@ -202,9 +218,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("size ",""+todoList.getInt("size",0));
                     textView.setText("해야 할 일 : "+todosize);
 
-                    int asdf = todoList.getInt("size", 1);
+                    asdf++;
 
-                    todoListEditor.putInt("size", asdf+1);
+                    todoListEditor.putInt("size", asdf);
                     todoListEditor.putString("todoList_title_"+ asdf, title);
                     todoListEditor.putString("todoList_desc_"+ asdf, desc);
                     todoListEditor.putString("todoList_location_"+ asdf, location);
@@ -212,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
                     todoListEditor.putBoolean("status",false);
                     todoListEditor.apply();
                 }
+                Log.e("size",todoList.getInt("size", 0)+"");
                 break;
         }
     }

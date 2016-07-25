@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:layout_marginStart="30dp"
-    android:layout_marginBottom="20dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="900px"
-    android:layout_height="260px"
+    android:layout_width="350dp"
+    android:layout_height="130dp"
     app:cardCornerRadius="5dp"
     android:id="@+id/recyclerlinear"
     android:background="@drawable/todo_incompleted">

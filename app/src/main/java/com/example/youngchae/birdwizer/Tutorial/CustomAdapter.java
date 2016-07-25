@@ -1,4 +1,4 @@
-package com.example.youngchae.birdwizer;
+package com.example.youngchae.birdwizer.Tutorial;
 
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.example.youngchae.birdwizer.R;
 
 public class CustomAdapter extends PagerAdapter {
 

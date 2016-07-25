@@ -20,15 +20,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WifiControl" />
-        <activity android:name=".FloatingControl" />
+        <activity android:name=".WIFI.WifiControl" />
+        <activity android:name=".Floating.FloatingControl" />
         <activity android:name=".Add_Calendar" />
-        <activity android:name=".TutorialActivity"/>
-        <receiver android:name=".WifiReceiver" />
+        <activity android:name=".Tutorial.TutorialActivity"/>
+        <receiver android:name=".WIFI.WifiReceiver" />
 
-        <service android:name=".MyService" />
+        <service android:name=".Floating.MyService" />
         <service
-            android:name=".WIFICheckService"
+            android:name=".WIFI.WIFICheckService"
             android:enabled="true"
             android:exported="true"></service>
     </application>

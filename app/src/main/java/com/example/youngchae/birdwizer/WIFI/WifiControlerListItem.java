@@ -1,4 +1,4 @@
-package com.example.youngchae.birdwizer;
+package com.example.youngchae.birdwizer.WIFI;
 
 /**
  * Created by youngchae on 2016-07-16.

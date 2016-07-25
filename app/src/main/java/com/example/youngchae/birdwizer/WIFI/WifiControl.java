@@ -1,4 +1,4 @@
-package com.example.youngchae.birdwizer;
+package com.example.youngchae.birdwizer.WIFI;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +22,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.youngchae.birdwizer.R;
 
 /**
  * Created by youngchae on 2016-07-15.
