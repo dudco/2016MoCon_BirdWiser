@@ -1,11 +1,21 @@
 package com.example.youngchae.birdwizer;
 
+import android.Manifest;
+import android.accounts.AccountManager;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -29,15 +39,37 @@ import com.example.youngchae.birdwizer.Tutorial.TutorialActivity;
 import com.example.youngchae.birdwizer.WIFI.WIFICheckService;
 import com.example.youngchae.birdwizer.WIFI.WifiControl;
 import com.example.youngchae.birdwizer.WIFI.WifiReceiver;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.CalendarScopes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
     CollapsingToolbarLayout collapsingToolbarLayout;
     private  static final int FLOATING_CONTROL_REQUEST_CODE = 1;
     private  static final int WIFI_CONTROL_REQUEST_CODE = FLOATING_CONTROL_REQUEST_CODE+1;
     private  static final int ADD_CALENDAR_REQUEST_CODE = WIFI_CONTROL_REQUEST_CODE+1;
+
+    static final int REQUEST_ACCOUNT_PICKER = 10;
+    static final int REQUEST_AUTHORIZATION = 11;
+    static final int REQUEST_GOOGLE_PLAY_SERVICES = 12;
+    static final int REQUEST_PERMISSION_GET_ACCOUNTS = 13;
+
+    private static final String PREF_ACCOUNT_NAME = "accountName";
+
+    private static final String[] SCOPES = { CalendarScopes.CALENDAR };
+
     public static List<MainRecyclerItem> items = new ArrayList<>();
     int todosize;
     MainRecyclerAdapter adapter;
@@ -46,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
     WifiReceiver mWifiMonitor;
     SharedPreferences todoList;
     SharedPreferences.Editor todoListEditor;
+
+    protected Calendar mService;
+    GoogleAccountCredential mCredential;
+
     int asdf = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +91,13 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences first = getSharedPreferences("first", MODE_PRIVATE);
         SharedPreferences.Editor firstEdit = first.edit();
 
-        if(first.getBoolean("first", true)){
-            startActivity(new Intent(MainActivity.this, TutorialActivity.class));
-            firstEdit.putBoolean("first", false);
-            firstEdit.apply();
+        mCredential = GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(SCOPES)).setBackOff(new ExponentialBackOff());
+        mService = new Calendar.Builder( AndroidHttp.newCompatibleTransport(), JacksonFactory.getDefaultInstance(), mCredential).setApplicationName("Google Calendar Study").build();
+
+        if(first.getBoolean("first", true)) {
+            startActivityForResult(new Intent(MainActivity.this, TutorialActivity.class), 213);
+                firstEdit.putBoolean("first", false);
+                firstEdit.apply();
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -192,6 +231,76 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
+    private void getResultsFromApi(){
+        if(! isGooglePalyServicesAvailable()){
+            acquireGooglePlayServices();
+        }else if(mCredential.getSelectedAccountName() == null){
+            chooseAccount();
+        }else if(!isDeviceOnline()){
+//            mOutputText.setText("No network connection available.");
+        }
+//        else{
+//            eventModel.removeAll(eventModel);
+//            AsyncLoad.run(GoogleLink.this);
+//        }
+    }
+    @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
+    private void chooseAccount(){
+        if(EasyPermissions.hasPermissions(this, Manifest.permission.GET_ACCOUNTS)){
+            String accountName = getPreferences(Context.MODE_PRIVATE).getString(PREF_ACCOUNT_NAME, null);
+            if(accountName != null){
+                mCredential.setSelectedAccountName(accountName);
+                getResultsFromApi();
+            }else{
+                startActivityForResult(mCredential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+            }
+        }else{
+            EasyPermissions.requestPermissions(this, "This app needs to access your Google account (via Contacts).", REQUEST_PERMISSION_GET_ACCOUNTS, Manifest.permission.GET_ACCOUNTS);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+    }
+
+    private boolean isDeviceOnline(){
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    private boolean isGooglePalyServicesAvailable(){
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        final int connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        return connectionStatusCode == ConnectionResult.SUCCESS;
+    }
+
+    private void acquireGooglePlayServices(){
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        final int  connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if(apiAvailability.isUserResolvableError(connectionStatusCode)){
+            showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
+        }
+    }
+
+    void showGooglePlayServicesAvailabilityErrorDialog(final int connectioniStatusCode){
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        Dialog dialog = apiAvailability.getErrorDialog(this, connectioniStatusCode, REQUEST_GOOGLE_PLAY_SERVICES);
+        dialog.show();
+
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -229,6 +338,43 @@ public class MainActivity extends AppCompatActivity {
                     todoListEditor.apply();
                 }
                 Log.e("size",todoList.getInt("size", 0)+"");
+                break;
+            case REQUEST_GOOGLE_PLAY_SERVICES:
+                if(resultCode != RESULT_OK){
+//                    mOutputText.setText("This app requires Google Play Services. Please install " +
+//                            "Google Play Services on your device and relaunch this app.");
+                }else{
+                    getResultsFromApi();
+                }
+                break;
+            case REQUEST_ACCOUNT_PICKER:
+                if(resultCode == RESULT_OK && data != null && data.getExtras()!=null){
+                    String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                    if(accountName!=null){
+                        SharedPreferences setting  = getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = setting.edit();
+                        editor.putString(PREF_ACCOUNT_NAME, accountName);
+                        editor.apply();
+                        mCredential.setSelectedAccountName(accountName);
+                        getResultsFromApi();
+                    }
+                }break;
+            case REQUEST_AUTHORIZATION:
+                if(resultCode == RESULT_OK){
+                    getResultsFromApi();
+                }
+                break;
+            case 213:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!Utils.canDrawOverlays(getApplicationContext())) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        intent.setData(Uri.parse("package:" + getPackageName()));
+                        startActivityForResult(intent, 1234);
+                    }
+                }
+                break;
+            case 1234:
+                getResultsFromApi();
                 break;
         }
     }

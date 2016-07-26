@@ -59,6 +59,9 @@ public class FloatingControl extends AppCompatActivity {
                             startService(intent);
                         } else {
                             requestPermission(OVERLAY_PERMISSION_REQ_CODE);
+//                            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+//                            intent.setData(Uri.parse("package:" + getPackageName()));
+//                            startActivityForResult(intent, requestCode);
                         }
                     }else{
                         startService(intent);

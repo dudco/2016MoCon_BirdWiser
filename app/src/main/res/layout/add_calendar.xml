@@ -118,6 +118,7 @@
         android:textSize="30sp"/>
         <EditText
             android:id="@+id/title_add"
+            android:padding="6dp"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="35dp"
@@ -142,6 +143,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="100dp"
+            android:padding="6dp"
             android:background="@drawable/shape"
             android:hint="* 일정의 내용을 입력해 주세요"
             android:gravity="top"/>
@@ -160,6 +162,7 @@
             android:textColor="@color/colorBurgundy"/>
         <Spinner
             android:id="@+id/spinner"
+            android:padding="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/location"
